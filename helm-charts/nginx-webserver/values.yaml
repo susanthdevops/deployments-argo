@@ -1,0 +1,46 @@
+# Application Settings
+image:
+  repository: nginx
+  tag: "1.22.1"
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: nginx-sa-test
+
+namespace: web-server-ns
+
+probes:
+  liveness:
+    path: /
+    port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  readiness:
+    path: /
+    port: 80
+    initialDelaySeconds: 5
+    periodSeconds: 10
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 80
+  nodePort: 30080
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+pod:
+  nodeSelector: {}
